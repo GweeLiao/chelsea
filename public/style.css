@@ -1,0 +1,134 @@
+body {
+    font-family: 'Sour Gummy', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4b5d1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+  }
+  
+  nav {
+    width: 100%;
+    background-color: #ef2177;
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+  }
+  
+  nav a {
+    color: white;
+    font-size: 24px;
+    text-decoration: none;
+    margin: 0 20px;
+    font-weight: bold;
+  }
+  
+  nav a:hover {
+    color: #f4b5d1;
+  }
+  
+  .calendar-container {
+    width: 70%;
+    height: 80%;
+    background-color: white;
+    border-radius: 10px;
+    border: 2px solid #ef2177;
+    padding: 20px;
+    overflow-y: auto;
+    display: block;
+  }
+  
+  .calendar-header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin: 20px 0;
+  }
+  
+  .calendar-header h2 {
+    margin: 0;
+    font-size: 30px;
+  }
+  
+  .calendar-header button {
+    padding: 8px;
+    background-color: #ef2177;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .calendar-header button:hover {
+    background-color: #f4b5d1;
+  }
+  
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-gap: 8px;  /* Gap between the days */
+    width: 100%;  /* Ensure it fills the width of the calendar */
+    margin-top: 20px;
+    justify-items: center;  /* This centers the grid items horizontally */
+  }
+  
+  .calendar-day {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 70px;
+    background-color: transparent;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.3s, color 0.3s;
+    margin: 0;
+    padding-top: 10px;  /* This will add space above the day cells */
+    border-radius: 12px;  
+  }
+  
+  .calendar-day:hover {
+    background-color: #ef2177;
+    color: white;
+  }
+  
+  .important-text {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    font-size: 10px;
+    color: red;
+  }
+  
+  @media (max-width: 768px) {
+    .calendar-container {
+      width: 90%;
+    }
+  
+    .calendar-header h2 {
+      font-size: 26px;
+    }
+  
+    .calendar-day {
+      width: 50px;
+      height: 50px;
+      font-size: 12px;
+    }
+  
+    .calendar-header button {
+      font-size: 14px;
+    }
+  }
+
+  
+  

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendar</title>
+  <script src="script.js" defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Sour+Gummy:wght@100..900&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Sour Gummy', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4b5d1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    nav {
+      width: 100%;
+      background-color: #ef2177;
+      display: flex;
+      justify-content: center;
+      padding: 10px 0;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 10;
+    }
+
+    nav a {
+      color: white;
+      font-size: 24px;
+      text-decoration: none;
+      margin: 0 20px;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      color: #f4b5d1;
+    }
+
+    .calendar-container {
+      width: 70%;
+      height: 80%;
+      background-color: white;
+      border-radius: 10px;
+      border: 2px solid #ef2177;
+      padding: 20px;
+      overflow-y: auto;
+      display: block;
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      margin: 20px 0;
+    }
+
+    .calendar-header h2 {
+      margin: 0;
+      font-size: 30px;
+    }
+
+    .calendar-header button {
+      padding: 8px;
+      background-color: #ef2177;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .calendar-header button:hover {
+      background-color: #f4b5d1;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      grid-gap: 0;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .calendar-day {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 70px;
+      background-color: transparent;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      position: relative;
+      transition: background-color 0.3s, color 0.3s;
+      margin: 0;
+      color: #ef2177;
+    }
+
+    .calendar-day:hover {
+      background-color: #ef2177;
+      color: white;
+    }
+
+    .important-text {
+      position: absolute;
+      bottom: 5px;
+      left: 5px;
+      font-size: 10px;
+      color: red;
+    }
+
+    .calendar-day.has-text {
+      border: 2px solid #ef2177; /* Add pink border if there is text */
+    }
+
+    @media (max-width: 768px) {
+      .calendar-container {
+        width: 90%;
+      }
+
+      .calendar-header h2 {
+        font-size: 26px;
+      }
+
+      .calendar-day {
+        width: 50px;
+        height: 50px;
+        font-size: 12px;
+      }
+
+      .calendar-header button {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="calendar.html">Calendar</a>
+  </nav>
+
+  <div class="calendar-container">
+    <div class="calendar-header">
+      <button id="prevMonthBtn">← Previous</button>
+      <h2 id="calendarMonth"></h2>
+      <button id="nextMonthBtn">Next →</button>
+    </div>
+    
+    <div class="calendar-grid" id="calendarGrid"></div>
+  </div>
+
+  <script>
+    const calendarGrid = document.getElementById('calendarGrid');
+    const calendarMonth = document.getElementById('calendarMonth');
+    const prevMonthBtn = document.getElementById('prevMonthBtn');
+    const nextMonthBtn = document.getElementById('nextMonthBtn');
+
+    let currentMonth = new Date().getMonth();
+    let currentYear = new Date().getFullYear();
+
+    // Function to create and display the calendar
+    function displayCalendar(month, year) {
+      const firstDayOfMonth = new Date(year, month, 1);
+      const lastDayOfMonth = new Date(year, month + 1, 0);
+      const daysInMonth = lastDayOfMonth.getDate();
+
+      const monthName = firstDayOfMonth.toLocaleString('default', { month: 'long' });
+      calendarMonth.textContent = `${monthName} ${year}`;
+
+      calendarGrid.innerHTML = '';
+
+      // Adding empty days before the first day of the month
+      for (let i = 0; i < firstDayOfMonth.getDay(); i++) {
+        const emptyCell = document.createElement('div');
+        calendarGrid.appendChild(emptyCell);
+      }
+
+      // Creating the days of the month
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dayCell = document.createElement('div');
+        dayCell.classList.add('calendar-day');
+        dayCell.textContent = day;
+
+        const importantText = localStorage.getItem(`${year}-${month}-${day}`);
+        if (importantText) {
+          const importantLabel = document.createElement('div');
+          importantLabel.classList.add('important-text');
+          importantLabel.textContent = importantText;
+          dayCell.appendChild(importantLabel);
+          dayCell.classList.add('has-text'); // Add class to indicate there is text
+        }
+
+        // Click event to add, edit or remove important text
+        dayCell.addEventListener('click', () => {
+          const userInput = prompt('Enter an important note for this day (leave blank to remove):', importantText || '');
+          if (userInput === null) return; // If the prompt is canceled
+          
+          if (userInput.trim() === '') {
+            // If text is empty, remove it
+            localStorage.removeItem(`${year}-${month}-${day}`);
+            dayCell.classList.remove('has-text'); // Remove the pink border
+          } else {
+            // Otherwise, save the new or updated text
+            localStorage.setItem(`${year}-${month}-${day}`, userInput);
+            dayCell.classList.add('has-text'); // Add the pink border
+          }
+
+          displayCalendar(currentMonth, currentYear); // Re-render the calendar
+        });
+
+        calendarGrid.appendChild(dayCell);
+      }
+    }
+
+    // Event listeners for month navigation buttons
+    prevMonthBtn.addEventListener('click', () => {
+      currentMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+      if (currentMonth === 11) currentYear--;
+      displayCalendar(currentMonth, currentYear);
+    });
+
+    nextMonthBtn.addEventListener('click', () => {
+      currentMonth = currentMonth === 11 ? 0 : currentMonth + 1;
+      if (currentMonth === 0) currentYear++;
+      displayCalendar(currentMonth, currentYear);
+    });
+
+    // Initial display of the calendar
+    displayCalendar(currentMonth, currentYear);
+  </script>
+</body>
+</html>
+
